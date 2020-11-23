@@ -10,7 +10,7 @@ registerLocale("th", th);
 
 const http = axios.create({
   // baseURL: process.env.api,
-  baseURL: "http://my-json-server.typicode.com/guitarjaku/react-code-test",
+  baseURL: "https://my-json-server.typicode.com/guitarjaku/react-code-test",
   headers: {
     "Content-type": "application/json",
   },
