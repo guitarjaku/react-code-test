@@ -22,7 +22,7 @@ const App = () => {
   const [paging, setPaging] = useState({
     page: 1,
     pageSize: 10,
-    total: 0,
+    total: 30,
     runNum: 0,
   });
   const [sortFirstName, setSortFirstName] = useState(0);
@@ -39,36 +39,39 @@ const App = () => {
     let dataQuery = "";
 
     if (sortFirstName === 1) {
-      dataQuery = "?_sort=first_name&_order=asc";
+      dataQuery = `?_sort=first_name&_order=asc&_page=${paging.page}&_limit=${paging.pageSize}`;
     } else if (sortFirstName === 2) {
-      dataQuery = "?_sort=first_name&_order=desc";
+      dataQuery = `?_sort=first_name&_order=desc&_page=${paging.page}&_limit=${paging.pageSize}`;
     }
 
     if (sortLastName === 1) {
-      dataQuery = "?_sort=last_name&_order=asc";
+      dataQuery = `?_sort=last_name&_order=asc&_page=${paging.page}&_limit=${paging.pageSize}`;
     } else if (sortLastName === 2) {
-      dataQuery = "?_sort=last_name&_order=desc";
+      dataQuery = `?_sort=last_name&_order=desc&_page=${paging.page}&_limit=${paging.pageSize}`;
     }
 
     if (sortGender === 1) {
-      dataQuery = "?_sort=gender&_order=asc";
+      dataQuery = `?_sort=gender&_order=asc&_page=${paging.page}&_limit=${paging.pageSize}`;
     } else if (sortGender === 2) {
-      dataQuery = "?_sort=gender&_order=desc";
+      dataQuery = `?_sort=gender&_order=desc&_page=${paging.page}&_limit=${paging.pageSize}`;
     }
-
     await http
       .get(`/employee${dataQuery}`)
       .then((res) => {
         // console.log("res", res);
         setDataTable(res.data);
-        setPaging({ ...paging, total: res.data.length });
+        setPaging({
+          ...paging,
+          // total: 30,
+          runNum: paging.pageSize * (paging.page - 1),
+        });
         handleBlocking(false);
       })
       .catch((err) => console.log(err));
   };
 
   const onClickPage = async (props: any) => {
-    let dataQuery = "";
+    let dataQuery = `?_page=${props}&_limit=${paging.pageSize}`;
     setPaging({
       ...paging,
       page: props,
@@ -76,24 +79,24 @@ const App = () => {
     });
 
     if (sortFirstName === 1) {
-      dataQuery = "?_sort=first_name&_order=asc";
+      dataQuery = `?_sort=first_name&_order=asc&_page=${props}&_limit=${paging.pageSize}`;
     } else if (sortFirstName === 2) {
-      dataQuery = "?_sort=first_name&_order=desc";
+      dataQuery = `?_sort=first_name&_order=desc&_page=${props}&_limit=${paging.pageSize}`;
     }
 
     if (sortLastName === 1) {
-      dataQuery = "?_sort=last_name&_order=asc";
+      dataQuery = `?_sort=last_name&_order=asc&_page=${props}&_limit=${paging.pageSize}`;
     } else if (sortLastName === 2) {
-      dataQuery = "?_sort=last_name&_order=desc";
+      dataQuery = `?_sort=last_name&_order=desc&_page=${props}&_limit=${paging.pageSize}`;
     }
 
     if (sortGender === 1) {
-      dataQuery = "?_sort=gender&_order=asc";
+      dataQuery = `?_sort=gender&_order=asc&_page=${props}&_limit=${paging.pageSize}`;
     } else if (sortGender === 2) {
-      dataQuery = "?_sort=gender&_order=desc";
+      dataQuery = `?_sort=gender&_order=desc&_page=${props}&_limit=${paging.pageSize}`;
     }
     await http
-      .get(`/employee${dataQuery}?_page=${props}&_limit=${paging.pageSize}`)
+      .get(`/employee${dataQuery}`)
       .then((res) => {
         // console.log("res", res);
         setDataTable(res.data);
@@ -113,12 +116,6 @@ const App = () => {
 
   const handleChange = (value) => {
     setSelectedValue(value);
-  };
-
-  const loadOptions = async (inputValue, callback) => {
-    // const res = await http.get(`/employee?first_name_like=${inputValue}`);
-    // console.log(res);
-    // callback(res.data);
   };
 
   useEffect(() => {
