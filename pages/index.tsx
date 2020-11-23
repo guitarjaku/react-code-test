@@ -22,7 +22,7 @@ const App = () => {
   const [paging, setPaging] = useState({
     page: 1,
     pageSize: 10,
-    total: 30,
+    total: 0,
     runNum: 0,
   });
   const [sortFirstName, setSortFirstName] = useState(0);
@@ -60,11 +60,12 @@ const App = () => {
       .then((res) => {
         // console.log("res", res);
         setDataTable(res.data);
-        setPaging({
-          ...paging,
-          // total: 30,
-          runNum: paging.pageSize * (paging.page - 1),
-        });
+        if (paging.total === 0) {
+          setPaging({
+            ...paging,
+            total: res.data.length,
+          });
+        }
         handleBlocking(false);
       })
       .catch((err) => console.log(err));
