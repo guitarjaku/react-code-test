@@ -73,28 +73,6 @@ const App = () => {
   };
 
   const onClickPage = async (props: any) => {
-    setPaging({
-      ...paging,
-      page: props,
-      runNum: paging.pageSize * (props - 1),
-    });
-    let dataQuery = checkSort(props);
-
-    // checkSort(props);
-
-    await http
-      .get(`/employee${dataQuery}`)
-      .then((res) => {
-        // console.log("res", res);
-        setDataTable(res.data);
-        setOption(res.data);
-        // setPaging({ ...paging, total: res.data.length });
-        handleBlocking(false);
-      })
-      .catch((err) => console.log(err));
-  };
-
-  const checkSort = (props: any) => {
     let dataQuery = `?_page=${props}&_limit=${paging.pageSize}`;
 
     if (sortFirstName === 1) {
@@ -115,7 +93,24 @@ const App = () => {
       dataQuery = `?_sort=gender&_order=desc&_page=${props}&_limit=${paging.pageSize}`;
     }
 
-    return dataQuery;
+    setPaging({
+      ...paging,
+      page: props,
+      runNum: paging.pageSize * (props - 1),
+    });
+
+    // checkSort(props);
+
+    await http
+      .get(`/employee${dataQuery}`)
+      .then((res) => {
+        // console.log("res", res);
+        setDataTable(res.data);
+        setOption(res.data);
+        // setPaging({ ...paging, total: res.data.length });
+        handleBlocking(false);
+      })
+      .catch((err) => console.log(err));
   };
 
   const handleInputChange = (value) => {
